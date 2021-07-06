@@ -1,0 +1,45 @@
+if [OWNER] == [Player]
+	* for the player, this script should only be run on DockAgents
+	$remove = [TRUE]
+	do if [THIS]-> is script 'Cmd.DockAgent' on stack of task=0
+		
+	if $remove
+		[THIS]-> set ship command/signal [SIGNAL_ATTACKED] to global default behaviour
+		return null
+	end
+end
+
+$AttackerName = $Attacker-> get name
+$attacker.ID = $Attacker-> get ID code
+$AttackerSector = $Attacker-> get sector
+
+= [THIS]-> launch 20 fight drones: protect me or attack target=[FALSE]
+= [THIS]-> launch 20 fight drones: protect me or attack target=[FALSE]
+* $Sector = [THIS]-> get sector
+* $Drones = find ship: sector=$Sector class or type=[Fighter Drone] race=[Player] flags=[Find.Multiple] refobj=[THIS] maxdist=10000 maxnum=123 refpos=null
+* $DroneCount = size of array $Drones
+* while $DroneCount
+* dec $DroneCount
+* $Drone = $Drones[$DroneCount]
+* START $Drone-> call script `!ship.cmd.killenemies.std` :
+* end
+
+$PreviousOrders = [THIS]-> get orders string
+[THIS]-> set orders string sprintf: fmt= 'Fleeing to %s' , $station , null , null , null , null
+
+= [THIS]-> call script '!ship.cmd.returnhome.std' :
+
+
+play sample 1129
+= wait 300 ms
+play sample: incoming transmission [IncomingTransmission.Message], from object [THIS]
+if [OWNER] == [Player]
+	write to player logbook: printf: pageid=1500 textid=224, [THIS], $AttackerSector, $AttackerName, $attacker.ID, [HOMEBASE]
+end
+
+= wait randomly from 2000 to 5000 ms
+
+$Null = null
+START $Null-> call script 'Lib.Gen.RunScriptWhenFinished' : ScriptName='Cmd.DockAgent' TaskWatch=null TaskRun=0 ObjectWatch=[THIS] ObjectRun=[THIS] arg1=null arg2=null arg3=null arg4=null arg5=null
+
+return null
