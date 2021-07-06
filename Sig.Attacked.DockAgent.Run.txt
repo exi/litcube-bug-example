@@ -2,7 +2,7 @@ if [OWNER] == [Player]
 	* for the player, this script should only be run on DockAgents
 	$remove = [TRUE]
 	do if [THIS]-> is script 'Cmd.DockAgent' on stack of task=0
-		
+		$remove = [FALSE]
 	if $remove
 		[THIS]-> set ship command/signal [SIGNAL_ATTACKED] to global default behaviour
 		return null
